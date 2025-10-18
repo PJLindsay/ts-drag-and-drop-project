@@ -1,9 +1,5 @@
 // autobind decorator
-function autobind(
-  _: any,
-  _2: string,
-  descriptor: PropertyDescriptor
-) {
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value
   const adjustedDescriptor: PropertyDescriptor = {
     configurable: true,
@@ -52,12 +48,45 @@ class ProjectInput {
     this.attach()
   }
 
+  // get all user input, validate it and return it
+  // if input invalid, will return void
+  private gatherUserInput(): [string, string, number] | void {
+    const enteredTitle = this.titleInputElement.value
+    const enteredDescripton = this.descriptionInputElement.value
+    const enteredPeople = this.peopleInputElement.value
+
+    if (
+      enteredTitle.trim().length === 0 ||
+      enteredDescripton.trim().length === 0 ||
+      enteredPeople.trim().length === 0
+    ) {
+      alert('Invalid input, please try again!')
+      return
+    } else {
+      return [enteredTitle, enteredDescripton, +enteredPeople]
+    }
+  }
+
+  private clearInputs() {
+    this.titleInputElement.value = ""
+    this.descriptionInputElement.value = ""
+    this.peopleInputElement.value = ""
+  }
+
   @autobind
   private submitHandler(event: Event) {
     event.preventDefault()
 
+    const userInput = this.gatherUserInput();
+    if (Array.isArray(userInput)) {
+      const [title, desc, people] = userInput;
+      console.log(title, desc, people)
+    }
+
     // TODO: validate input
     console.log(this.titleInputElement.value)
+
+    this.clearInputs();
   }
 
   private configure() {
