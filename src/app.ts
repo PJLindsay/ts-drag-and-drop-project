@@ -1,3 +1,21 @@
+// autobind decorator
+function autobind(
+  _: any,
+  _2: string,
+  descriptor: PropertyDescriptor
+) {
+  const originalMethod = descriptor.value
+  const adjustedDescriptor: PropertyDescriptor = {
+    configurable: true,
+    get() {
+      const boundFn = originalMethod.bind(this)
+      return boundFn
+    },
+  }
+  return adjustedDescriptor
+}
+
+// Project Input class
 class ProjectInput {
   templateElement: HTMLTemplateElement
   hostElement: HTMLDivElement
@@ -20,23 +38,30 @@ class ProjectInput {
     this.element.id = 'user-input'
 
     // get access to input elements and store them as properies of this class
-    this.titleInputElement = this.element.querySelector('#title') as HTMLInputElement
-    this.descriptionInputElement = this.element.querySelector('#description') as HTMLInputElement
-    this.peopleInputElement = this.element.querySelector('#people') as HTMLInputElement
+    this.titleInputElement = this.element.querySelector(
+      '#title'
+    ) as HTMLInputElement
+    this.descriptionInputElement = this.element.querySelector(
+      '#description'
+    ) as HTMLInputElement
+    this.peopleInputElement = this.element.querySelector(
+      '#people'
+    ) as HTMLInputElement
 
     this.configure()
     this.attach()
   }
 
+  @autobind
   private submitHandler(event: Event) {
-    event.preventDefault();
+    event.preventDefault()
 
     // TODO: validate input
     console.log(this.titleInputElement.value)
   }
 
   private configure() {
-    this.element.addEventListener("submit", this.submitHandler.bind(this))
+    this.element.addEventListener('submit', this.submitHandler.bind(this))
   }
 
   private attach() {
