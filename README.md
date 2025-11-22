@@ -38,3 +38,11 @@ also have to set change app.js to bundle.js (in the index.html):
 
 we also need to uncomment "moduleResolution": "node",in tsconfig
 (to fix ERROR: The resource from “http://localhost:3000/dist/bundle.js” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff).)
+
+
+we want imports and exports that clearly state what we import and export
+we can get this behaviour with ES6 modules
+
+we should use ES6 module import style so that TS will complain if you have missing import statements...
+if we rely on browser, we need to add the .js to our import statements, once we use Webpack we can get rid of the .js
+
