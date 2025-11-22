@@ -205,9 +205,14 @@ class ProjectItem
     this.renderContent()
   }
 
+  // dataTransfer property is special for drag events
+  // this allows us to attach data to the drag event
+  // data will be stored during the drag and can be accessed on drop
   @autobind
   dragStartHandler(event: DragEvent) {
-    console.log(event)
+    event.dataTransfer!.setData('text/plain', this.project.id)
+    // controls what the cursor will look like during drag
+    event.dataTransfer!.effectAllowed = 'move'
   }
 
   // Note: _ declares we won't use the parameter
@@ -243,13 +248,21 @@ class ProjectList
   }
 
   @autobind
-  dragOverHandler(_: DragEvent) {
-    const listEl = this.element.querySelector('ul')!
-    // add CSS style to indicate it is droppable
-    listEl.classList.add('droppable')
+  dragOverHandler(event: DragEvent) {
+    // we only allow dropping of plain text in this case
+    if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+      // default for JS drag and drop is to not allow dropping
+      // for this element we want to allow a drop when user lets go
+      event.preventDefault()
+      const listEl = this.element.querySelector('ul')!
+      // add CSS style to indicate it is droppable
+      listEl.classList.add('droppable')
+    }
   }
 
-  dropHandler(_: DragEvent) {}
+  dropHandler(event: DragEvent) {
+    console.log(event.dataTransfer!.getData('text/plain'))
+  }
 
   @autobind
   dragLeaveHandler(_: DragEvent) {
