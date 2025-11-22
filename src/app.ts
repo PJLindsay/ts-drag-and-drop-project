@@ -69,10 +69,24 @@ class ProjectState extends State<Project> {
     )
 
     this.projects.push(newProject)
+    this.updateListeners()
+  }
 
-    //notify all listeners
+  // for drag & drop -- allow project to move from one list to another
+  // we need to avoid moving project if they drop it into it's current list (Active projects)
+  moveProject(projectId: string, newStatus: ProjectStatus) {
+    const project = this.projects.find((prj) => prj.id === projectId)
+
+    // avoid unnecessary re-render cycle
+    if (project && project.status !== newStatus) {
+      project.status = newStatus
+      this.updateListeners()
+    }
+  }
+
+  // refresh/notify all listeners
+  private updateListeners() {
     for (const listenerFn of this.listeners) {
-      // pass brand new copy
       listenerFn(this.projects.slice())
     }
   }
@@ -260,8 +274,13 @@ class ProjectList
     }
   }
 
+  @autobind
   dropHandler(event: DragEvent) {
-    console.log(event.dataTransfer!.getData('text/plain'))
+    const projectId = event.dataTransfer!.getData('text/plain')
+    projectState.moveProject(
+      projectId,
+      this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished
+    )
   }
 
   @autobind
