@@ -2,7 +2,7 @@
 // note our imports must use js so it will work when compiled
 import { DragTarget } from '../models/drag-drop.js'
 import { Project, ProjectStatus } from '../models/project.js'
-import { Component } from './base-component.js'
+import Component from './base-component.js'
 import { autobind } from '../decorators/autobind.js'
 import { ProjectItem } from './project-item.js'
 import { projectState } from '../state/project-state.js'
